@@ -1,5 +1,15 @@
 package model.enums;
 
-public class GeneroLibro {
-
+public enum GeneroLibro {
+    FICCION,
+    NO_FICCION,
+    CIENCIA_FICCION,
+    FANTASIA,
+    MISTERIO,
+    TERROR,
+    ROMANCE,
+    HISTORICO,
+    BIOGRAFIA,
+    AUTOAYUDA,
+    OTRO
 }

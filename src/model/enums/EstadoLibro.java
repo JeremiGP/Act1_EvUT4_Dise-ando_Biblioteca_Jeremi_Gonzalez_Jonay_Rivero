@@ -1,5 +1,7 @@
 package model.enums;
 
-public class EstadoLibro {
-
+public enum EstadoLibro {
+    DISPONIBLE,
+    PRESTADO,
+    RESERVADO
 }
