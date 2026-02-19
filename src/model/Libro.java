@@ -75,7 +75,7 @@ public class Libro {
 
     @Override
     public String toString() {
-        return String.format("ISBN: %s | %s | %s | Copias: %d/%d | Estado: %s",
-                isbn, titulo, genero, copiasDisponibles, copiasTotales, estado);
+        return String.format("ISBN: %s | %s | %s | Copias: %d/%d | Estado: %s | Autor: %s | Editorial: %s | Año: %d",
+                isbn, titulo, genero, copiasDisponibles, copiasTotales, estado, autor, editorial, anioPublicacion);
     }
 }

@@ -25,10 +25,7 @@ public class Consola {
 
             switch (opcion) {
                 case 1:
-                    List<Libro> lista = gestor.getCatalogo();
-                    for (Libro p : lista) {
-                        System.out.println(p);
-                    }
+                    gestor.getCatalogo();
                     break;
                 case 2:
                     System.out.println("Indique el titulo del libro que quiere buscar: ");
