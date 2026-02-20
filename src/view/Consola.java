@@ -22,7 +22,7 @@ public class Consola {
             System.out.println("4. Prestar Libro");
             System.out.println("5. Devolver Libro");
             System.out.println("6. Reservar Libro");
-
+            System.out.println("7. Quien tiene el libro");
             System.out.println("0. Salir");
             System.out.println("==============================");
             System.out.print("Seleccione una opción: ");
