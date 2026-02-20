@@ -146,4 +146,40 @@ public class Consola {
             libros.forEach(System.out::println);
         }
     }
+
+    /**
+     * Método para simular fallos y verificar que las excepciones
+     */
+    public void simularPruebasDeExcepciones(GestorBiblioteca gestor) {
+        System.out.println("\n--- INICIANDO TEST DE EXCEPCIONES ---");
+
+        // PRUEBA 1: Intentar prestar un libro que no existe (Debe lanzar Exception)
+        try {
+            System.out.println("[Test 1] Intentando prestar ISBN inexistente '999'...");
+            gestor.realizarPrestamo("001", "999");
+        } catch (Exception e) {
+            System.out.println("CAZADA: Se evitó el error: " + e.getMessage());
+        }
+
+        // PRUEBA 2: Devolución con datos nulos o vacíos
+        try {
+            System.out.println("\n[Test 2] Intentando devolver con ID vacío...");
+            gestor.devolverLibro("", "111");
+        } catch (IllegalArgumentException e) {
+            // La UT4 recomienda usar IllegalArgumentException para argumentos no válidos
+            System.out.println("CAZADA (Error de argumento): " + e.getMessage());
+        }
+
+        // PRUEBA 3: Simulación de sanción (Lógica de negocio)
+        try {
+            System.out.println("\n[Test 3] Verificando sanciones para usuario 001...");
+            // Aquí rescatamos la lógica de tu método original
+            gestor.verificarVencimientosYSancionar("001");
+            System.out.println("Verificación completada sin errores críticos.");
+        } catch (Exception e) {
+            System.err.println("ERROR CRÍTICO en el sistema: " + e.getMessage());
+        }
+
+        System.out.println("\n--- FIN DEL TEST DE EXCEPCIONES ---");
+    }
 }

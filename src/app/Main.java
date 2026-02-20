@@ -17,6 +17,8 @@ public class Main {
         Consola vista = new Consola();
 
         cargarDatosIniciales(gestor);
+        
+        vista.simularPruebasDeExcepciones(gestor);
 
         vista.mostrarMenu(gestor);
     }
@@ -47,7 +49,5 @@ public class Main {
         gestor.altaUsuario(u2);
         gestor.altaUsuario(uSancionado);
     }
-
-    // Pruebas para comprobar que las excepciones funcionan.
 
 }
