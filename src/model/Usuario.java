@@ -8,7 +8,7 @@ public class Usuario {
     private String id;
     private String nombre;
     private List<Libro> librosPrestados;
-    private List<Libro> historialPrestamos;
+    private List<Prestamo> historialPrestamos;
     private LocalDate fechaFinSancion;
 
     public Usuario(String id, String nombre) {
@@ -31,7 +31,7 @@ public class Usuario {
         return librosPrestados;
     }
 
-    public List<Libro> getHistorialPrestamos() {
+    public List<Prestamo> getHistorialPrestamos() {
         return historialPrestamos;
     }
 
@@ -39,25 +39,8 @@ public class Usuario {
         return fechaFinSancion;
     }
 
-    public void setId(String id) {
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("El ID no puede estar vacío.");
-        }
-        this.id = id;
-    }
-
     public void setFechaFinSancion(LocalDate fecha) {
-        if (fecha == null) {
-            throw new IllegalArgumentException("La fecha de fin de sanción no puede estar vacía.");
-        }
         this.fechaFinSancion = fecha;
-    }
-
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío.");
-        }
-        this.nombre = nombre;
     }
 
     @Override
