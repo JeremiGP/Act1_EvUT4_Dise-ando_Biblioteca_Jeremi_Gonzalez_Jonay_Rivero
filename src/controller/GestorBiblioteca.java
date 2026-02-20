@@ -86,6 +86,27 @@ public class GestorBiblioteca {
         return librosEncontrados;
     }
 
+    // Buscar que usuario tiene un libro.
+    public Usuario quienTieneElLibro(String isbn) {
+
+        // Recorremos toda la lista de usuarios, recorremos la lista de libros prestados
+        // y si el ISBN coincide con el que buscamos,
+        // buscamos la fecha en la que tiene que devolverlo al igual que el usuario.
+        for (Usuario usuario : usuarios) {
+            for (Libro libro : usuario.getLibrosPrestados()) {
+                if (libro.getIsbn().equals(isbn)) {
+                    String fechaVencimiento = buscarFechaVencimiento(usuario.getId(), isbn);
+                    System.out.println("El usuario " + usuario.getNombre() +
+                            " tiene el libro " + isbn +
+                            " (Vence: " + fechaVencimiento + ")");
+                    return usuario;
+                }
+            }
+        }
+        // revisamos todo si no encontramos nada devolveos null.
+        return null;
+    }
+
     // --- GESTIÓN DE TIEMPO Y SANCIONES ---
 
     // Verificamos si hay libros vencidos y sancionamos al usuario.
