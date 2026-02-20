@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import controller.GestorBiblioteca;
 import model.*;
 import model.enums.*;
-import exceptions.*;
 import view.Consola;
 
 public class Main {
@@ -18,8 +17,6 @@ public class Main {
         Consola vista = new Consola();
 
         cargarDatosIniciales(gestor);
-
-        demostrarExcepciones(gestor);
 
         vista.mostrarMenu(gestor);
     }

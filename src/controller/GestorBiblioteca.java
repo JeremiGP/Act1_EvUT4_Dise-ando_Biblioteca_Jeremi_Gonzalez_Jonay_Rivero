@@ -170,7 +170,7 @@ public class GestorBiblioteca {
         }
 
         // Realizamos el prestamo.
-        Prestamo nuevoPrestamo = new Prestamo(libro, usuario);
+        Prestamo nuevoPrestamo = new Prestamo(libro, usuario, LocalDate.now(), LocalDate.now().plusDays(30));
         prestamosActivos.add(nuevoPrestamo);
 
         // Actualizamos los datos del usuario y del libro.
