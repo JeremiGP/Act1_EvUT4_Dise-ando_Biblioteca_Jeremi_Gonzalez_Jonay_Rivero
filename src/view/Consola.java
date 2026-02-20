@@ -8,12 +8,17 @@ import model.Usuario;
 import java.util.Scanner;
 import java.util.List;
 
+/**
+ * Clase Consola: Encargada de la interacción con el usuario.
+ * Aplica estructuras de control de la UT2 y gestión de colecciones de la UT3.
+ */
 public class Consola {
     private final Scanner sc = new Scanner(System.in);
 
     public void mostrarMenu(GestorBiblioteca gestor) {
         int opcion = -1;
-        
+
+        // Bucle principal: se mantiene activo hasta que la opción sea 0
         while (opcion != 0) {
             System.out.println("\n======= Menú Principal =======");
             System.out.println("1. Resumen Catálogo");
@@ -32,52 +37,27 @@ public class Consola {
                 opcion = Integer.parseInt(entrada);
 
                 switch (opcion) {
-                    case 1: gestor.resumenLibros(); 
-                    break;
-                    case 2: imprimirResumen(gestor); 
-                    break;
-                    case 3: menuBusqueda(gestor); 
-                    break;
-                    case 4: {
-                        System.out.print("Indique ID Usuario: ");
-                        String idU = sc.nextLine();
-                        System.out.print("Indique el ISBN del libro: ");
-                        String isbnL = sc.nextLine();
-                        
-                        // Capturamos el posible error específico del préstamo
-                        try {
-                            Prestamo p = gestor.realizarPrestamo(idU, isbnL);
-                            System.out.println("¡Éxito! Préstamo registrado.");
-                            System.out.println("   Libro: " + p.getLibro().getTitulo());
-                            System.out.println("   Vence el: " + p.getFechaVencimiento());
-                        } catch (Exception e) {
-                            System.out.println("Error al prestar: " + e.getMessage());
-                        }
-                    }
-                    case 5: {
-                        System.out.print("Indique ID Usuario: ");
-                        String idD = sc.nextLine();
-                        System.out.print("Indique el ISBN a devolver: ");
-                        String isbnD = sc.nextLine();
-                        
-                        try {
-                            // Capturamos el posible error específico del préstamo
-                            boolean sancionado = gestor.devolverLibro(idD, isbnD);
-                            System.out.println("Libro devuelto correctamente.");
-                            if (sancionado) {
-                                System.out.println("ATENCIÓN: Entrega fuera de plazo.");
-                                System.out.println("Usuario sancionado por 7 días.");
-                            }
-                        } catch (IllegalArgumentException e) {
-                            System.out.println("Dato inválido: " + e.getMessage());
-                        }
-                    }
-                    case 6: {
+                    case 1:
+                        gestor.resumenLibros();
+                        break;
+                    case 2:
+                        imprimirResumen(gestor);
+                        break;
+                    case 3:
+                        menuBusqueda(gestor);
+                        break;
+                    case 4:
+                        ejecutarFlujoPrestamo(gestor);
+                        break;
+                    case 5:
+                        ejecutarFlujoDevolucion(gestor);
+                        break;
+                    case 6:
                         System.out.print("ISBN a reservar: ");
                         gestor.reservarLibro(sc.nextLine());
                         System.out.println("Solicitud de reserva procesada.");
-                    }
-                    case 7: {
+                        break;
+                    case 7:
                         System.out.println("Introduzca ISBN del libro: ");
                         String isbn = sc.nextLine();
                         Usuario usuario = gestor.quienTieneElLibro(isbn);
@@ -86,15 +66,55 @@ public class Consola {
                         } else {
                             System.out.println("El libro no está prestado.");
                         }
-                    }
-                    case 0: System.out.println("Saliendo del sistema...");
-                    default: System.out.println("Opción no válida.");
+                        break;
+                    case 0:
+                        System.out.println("Saliendo del sistema...");
+                        break;
+                    default:
+                        System.out.println("Opción no válida.");
+                        break;
                 }
+
             } catch (NumberFormatException e) {
-                System.out.println("Error: Por favor, introduzca un número válido.");
+                System.out.println("Error: Por favor, introduzca un número entero válido.");
             } catch (Exception e) {
                 System.err.println("Ha ocurrido un error inesperado: " + e.getMessage());
             }
+        }
+    }
+
+    // --- MÉTODOS AUXILIARES PARA LIMPIAR EL SWITCH (MODULARIZACIÓN) ---
+
+    private void ejecutarFlujoPrestamo(GestorBiblioteca gestor) {
+        System.out.print("Indique ID Usuario: ");
+        String idU = sc.nextLine();
+        System.out.print("Indique el ISBN del libro: ");
+        String isbnL = sc.nextLine();
+
+        try {
+            Prestamo p = gestor.realizarPrestamo(idU, isbnL);
+            System.out.println("¡Éxito! Préstamo registrado.");
+            System.out.println("   Libro: " + p.getLibro().getTitulo());
+            System.out.println("   Vence el: " + p.getFechaVencimiento());
+        } catch (Exception e) {
+            System.out.println("Error al prestar: " + e.getMessage());
+        }
+    }
+
+    private void ejecutarFlujoDevolucion(GestorBiblioteca gestor) {
+        System.out.print("Indique ID Usuario: ");
+        String idD = sc.nextLine();
+        System.out.print("Indique el ISBN a devolver: ");
+        String isbnD = sc.nextLine();
+
+        try {
+            boolean sancionado = gestor.devolverLibro(idD, isbnD);
+            System.out.println("Libro devuelto correctamente.");
+            if (sancionado) {
+                System.out.println("ATENCIÓN: Entrega fuera de plazo. Usuario sancionado por 7 días.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Dato inválido: " + e.getMessage());
         }
     }
 
@@ -113,8 +133,8 @@ public class Consola {
                 System.out.println("  - Sin libros prestados.");
             } else {
                 System.out.println("  - En posesión:");
-                usuario.getLibrosPrestados().forEach(libro -> 
-                    System.out.println("    * " + libro.getTitulo() + " [ISBN: " + libro.getIsbn() + "]"));
+                usuario.getLibrosPrestados().forEach(
+                        libro -> System.out.println("    * " + libro.getTitulo() + " [ISBN: " + libro.getIsbn() + "]"));
             }
             System.out.println("---------------------------------------");
         }
@@ -125,23 +145,27 @@ public class Consola {
         try {
             int opcion2 = Integer.parseInt(sc.nextLine());
             switch (opcion2) {
-                case 1: {
+                case 1:
                     System.out.print("Ingrese título: ");
                     imprimirResultados(gestor.buscarLibroPorTitulo(sc.nextLine()));
-                }
-                case 2: {
+                    break;
+                case 2:
                     System.out.print("Ingrese ISBN: ");
                     Libro libro = gestor.buscarLibroPorIsbn(sc.nextLine());
-                    if (libro != null) System.out.println(libro);
-                    else System.out.println("Libro no encontrado.");
-                }
-                case 3: {
+                    if (libro != null)
+                        System.out.println(libro);
+                    else
+                        System.out.println("Libro no encontrado.");
+                    break;
+                case 3:
                     System.out.println("Géneros: FICCION, NO_FICCION, TERROR, CIENCIA, HISTORIA");
                     System.out.print("Seleccione Género: ");
                     GeneroLibro gl = GeneroLibro.valueOf(sc.nextLine().toUpperCase());
                     imprimirResultados(gestor.buscarLibroPorGenero(gl));
-                }
-                default: System.out.println("Opción de búsqueda no válida.");
+                    break;
+                default:
+                    System.out.println("Opción de búsqueda no válida.");
+                    break;
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Error: El género introducido no existe.");
