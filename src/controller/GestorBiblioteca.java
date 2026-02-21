@@ -155,7 +155,8 @@ public class GestorBiblioteca {
 
         // Si el usuario tiene una sanción activa, no se puede realizar el prestamo.
         if (usuario.getFechaFinSancion() != null && usuario.getFechaFinSancion().isAfter(LocalDate.now())) {
-            throw new SancionActivaException("El usuario está sancionado hasta: " + usuario.getFechaFinSancion());
+            throw new SancionActivaException(
+                    "ADVERTENCIA: El usuario está sancionado hasta: " + usuario.getFechaFinSancion());
         }
 
         // Si el usuario tiene 3 libros prestados, no se puede realizar el prestamo.
@@ -169,14 +170,45 @@ public class GestorBiblioteca {
             throw new LibroNoDisponibleException("ERROR: El libro " + libro.getTitulo() + " no está disponible.");
         }
 
+        // Verificacion de si quedan copias disponibles
+        if (libro.getCopiasDisponibles() <= 0) {
+            throw new LibroNoDisponibleException("ERROR: No quedan copias disponibles de " + libro.getTitulo()
+                    + " (Estado actual: " + libro.getEstado() + ")");
+        }
+
+        // Verifica si tiene libros vencidos actualmente
+        for (Prestamo prestamo : prestamosActivos) {
+            if (prestamo.getUsuario().getId().equals(idUsuario)
+                    && LocalDate.now().isAfter(prestamo.getFechaVencimiento())) {
+                throw new SancionActivaException(
+                        "ADVERTENCIA: Tienes libros vencidos. Devuélvelos primero.");
+            }
+        }
+
+        // Verifica el bloqueo de 7 días del historial
+        for (Prestamo prestamo : usuario.getHistorialPrestamos()) {
+            if (prestamo.getLibro().getIsbn().equals(isbnLibro)) {
+                if (prestamo.getFechaDevolucionReal() != null
+                        && LocalDate.now().isBefore(prestamo.getFechaDevolucionReal().plusDays(7))) {
+                    throw new SancionActivaException(
+                            "ADVERTENCIA: (Bloqueo de 7 días) No puedes volver a pedir este libro hasta el "
+                                    + prestamo.getFechaDevolucionReal().plusDays(7));
+                }
+            }
+        }
+
         // Realizamos el prestamo.
         Prestamo nuevoPrestamo = new Prestamo(libro, usuario, LocalDate.now(), LocalDate.now().plusDays(30));
+
         prestamosActivos.add(nuevoPrestamo);
 
-        // Actualizamos los datos del usuario y del libro.
         usuario.getLibrosPrestados().add(libro);
-        libro.setEstado(EstadoLibro.PRESTADO);
         libro.reducirCopia();
+
+        // Cambiamos el estado global a PRESTADO si ya no quedan más copias en absoluto
+        if (libro.getCopiasDisponibles() == 0) {
+            libro.setEstado(EstadoLibro.PRESTADO);
+        }
 
         return nuevoPrestamo;
     }
@@ -186,9 +218,15 @@ public class GestorBiblioteca {
 
         // Buscamos el usuario.
         Usuario usuario = buscarUsuario(idUsuario);
+
+        // Si no se encuentra el usuario, lanzamos una excepción.
+        if (usuario == null) {
+            throw new IllegalArgumentException("ERROR: No se encontró ningún usuario con el ID proporcionado.");
+        }
+
         Prestamo prestamoEncontrado = null;
 
-        // Buscamos el prestamo.
+        // Buscamos el prestamo activo.
         for (Prestamo prestamo : prestamosActivos) {
             if (prestamo.getUsuario().getId().equals(idUsuario) && prestamo.getLibro().getIsbn().equals(isbnLibro)) {
                 prestamoEncontrado = prestamo;
@@ -196,34 +234,40 @@ public class GestorBiblioteca {
             }
         }
 
-        // Si no se encuentra el prestamo, lanzamos una excepción.
+        // Cláusula de guarda: Si no hay préstamo, cortamos la ejecución y lanzamos
+        // error
         if (prestamoEncontrado == null) {
             throw new IllegalArgumentException(
                     "ERROR: No se encontró un préstamo activo de ese libro para ese usuario.");
         }
 
-        // Verificamos si hay sanción.
+        // Variables de apoyo
         boolean huboSancion = false;
         Libro libro = prestamoEncontrado.getLibro();
 
         // Registramos la devolución.
         prestamoEncontrado.registrarDevolucion();
 
-        // Aplicamos sanción si devuelve tarde.
+        // Evaluamos si hay sanción por entrega tardía.
         if (prestamoEncontrado.getFechaDevolucionReal().isAfter(prestamoEncontrado.getFechaVencimiento())) {
             usuario.setFechaFinSancion(LocalDate.now().plusDays(7));
             huboSancion = true;
         }
 
-        // Actualizamos los datos del usuario y del libro.
+        // Actualizamos los datos del usuario
         usuario.getLibrosPrestados().remove(libro);
-        usuario.getHistorialPrestamos().add(libro);
+        usuario.getHistorialPrestamos().add(prestamoEncontrado);
 
-        libro.setEstado(EstadoLibro.DISPONIBLE);
+        // Actualizamos los datos del libro.
         libro.aumentarCopia();
+        if (libro.getCopiasDisponibles() > 0) {
+            libro.setEstado(EstadoLibro.DISPONIBLE);
+        }
 
+        // Cerramos el préstamo activo.
         prestamosActivos.remove(prestamoEncontrado);
 
+        // Devolvemos si hubo sanción para que la interfaz pueda avisar al usuario.
         return huboSancion;
     }
 
@@ -238,13 +282,19 @@ public class GestorBiblioteca {
             throw new NullPointerException("ERROR: El libro no existe.");
         }
 
-        // Si el libro no está disponible, lanzamos una excepción.
-        if (libro.getEstado() != EstadoLibro.DISPONIBLE) {
-            throw new IllegalArgumentException("ERROR: El libro no se puede reservar en su estado actual.");
+        // Si no quedan copias disponibles, lanzamos una excepción.
+        if (libro.getCopiasDisponibles() <= 0) {
+            throw new LibroNoDisponibleException("ERROR: No quedan copias disponibles de este libro para reservar.");
         }
 
-        // Reservamos el libro.
-        libro.setEstado(EstadoLibro.RESERVADO);
+        // Reducimos la copia.
+        libro.reducirCopia();
+
+        // Solo cambiamos el estado global a RESERVADO si se agotan las copias al hacer
+        // esta reserva
+        if (libro.getCopiasDisponibles() == 0) {
+            libro.setEstado(EstadoLibro.RESERVADO);
+        }
     }
 
     // --- RESÚMENES ---
@@ -330,10 +380,6 @@ public class GestorBiblioteca {
     }
 
     // --- GETTERS ---
-
-    public List<Libro> getCatalogo() {
-        return catalogo;
-    }
 
     public List<Usuario> getUsuarios() {
         return usuarios;
