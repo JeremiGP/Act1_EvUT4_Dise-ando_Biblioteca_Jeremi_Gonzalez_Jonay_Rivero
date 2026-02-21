@@ -1,6 +1,7 @@
 package view;
 
 import controller.GestorBiblioteca;
+import exceptions.*;
 import model.Libro;
 import model.Prestamo;
 import model.enums.GeneroLibro;
@@ -192,7 +193,7 @@ public class Consola {
             System.out.println("[Test 1] Intentando prestar ISBN inexistente '999'...");
             gestor.realizarPrestamo("001", "999");
         } catch (Exception e) {
-            System.out.println("CAZADA: Se evitó el error: " + e.getMessage());
+            System.out.println("CAPTURADA: Se evitó el error: " + e.getMessage());
         }
 
         // PRUEBA 2: Devolución con datos nulos o vacíos
@@ -201,7 +202,7 @@ public class Consola {
             gestor.devolverLibro("", "111");
         } catch (IllegalArgumentException e) {
             // La UT4 recomienda usar IllegalArgumentException para argumentos no válidos
-            System.out.println("CAZADA (Error de argumento): " + e.getMessage());
+            System.out.println("CAPTURADA (Error de argumento): " + e.getMessage());
         }
 
         // PRUEBA 3: Simulación de sanción (Lógica de negocio)
@@ -212,6 +213,16 @@ public class Consola {
             System.out.println("Verificación completada sin errores críticos.");
         } catch (Exception e) {
             System.err.println("ERROR CRÍTICO en el sistema: " + e.getMessage());
+        }
+
+        // PRUEBA 4: Préstamo a usuario sancionado (SancionActivaException)
+        try {
+            System.out.println("\n[Test 4] Intentando prestar al usuario sancionado '003'...");
+            gestor.realizarPrestamo("003", "111");
+        } catch (SancionActivaException e) {
+            System.out.println("CAPTURADA (Sanción Activa): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
 
         System.out.println("\n--- FIN DEL TEST DE EXCEPCIONES ---");
