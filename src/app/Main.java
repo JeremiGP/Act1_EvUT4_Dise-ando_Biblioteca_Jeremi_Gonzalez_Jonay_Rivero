@@ -16,6 +16,14 @@ public class Main {
         GestorBiblioteca gestor = new GestorBiblioteca();
         Consola vista = new Consola();
 
+        cargarDatosIniciales(gestor);
+        
+        vista.simularPruebasDeExcepciones(gestor);
+
+        vista.mostrarMenu(gestor);
+    }
+
+    private static void cargarDatosIniciales(GestorBiblioteca gestor) {
         // Creamos libros
         Libro l1 = new Libro("111", "Don Quijote", "Cervantes", "Planeta", GeneroLibro.CIENCIA_FICCION, 1605, 5);
         Libro l2 = new Libro("112", "Cien Años de Soledad", "García Márquez", "Sudamericana", GeneroLibro.FICCION, 1967,
@@ -41,7 +49,4 @@ public class Main {
         gestor.altaUsuario(u2);
         gestor.altaUsuario(uSancionado);
 
-        // Lanzamos el menú interactivo para continuar probando la aplicación
-        vista.mostrarMenu(gestor);
-    }
 }
