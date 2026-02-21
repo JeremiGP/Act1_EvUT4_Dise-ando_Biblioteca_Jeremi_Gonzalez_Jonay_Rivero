@@ -288,6 +288,30 @@ public class GestorBiblioteca {
         libro.setEstado(EstadoLibro.RESERVADO);
     }
 
+    // Cancelamos la reserva de un libro.
+    public void cancelarReserva(String isbn) {
+        // Buscamos el libro.
+        Libro libro = buscarLibro(isbn);
+
+        // Si no se encuentra el libro, lanzamos una excepción.
+        if (libro == null) {
+            throw new IllegalArgumentException("ERROR: El libro con ISBN " + isbn + " no existe.");
+        }
+
+        // Si el libro no está reservado, no podemos cancelar nada.
+        if (libro.getEstado() != EstadoLibro.RESERVADO) {
+            throw new IllegalStateException("ERROR: El libro '" + libro.getTitulo() + "' no tiene una reserva activa.");
+        }
+
+        // Devolvemos la copia a la disponibilidad.
+        libro.aumentarCopia();
+
+        // Actualizamos el estado para que vuelva a figurar como DISPONIBLE.
+        if (libro.getCopiasDisponibles() > 0) {
+            libro.setEstado(EstadoLibro.DISPONIBLE);
+        }
+    }
+
     // --- RESÚMENES ---
 
     // Muestra catálogo completo.

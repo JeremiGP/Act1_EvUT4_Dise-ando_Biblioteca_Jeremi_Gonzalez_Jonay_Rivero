@@ -29,6 +29,8 @@ public class Consola {
             System.out.println("5. Devolver Libro");
             System.out.println("6. Reservar Libro");
             System.out.println("7. Quien tiene el libro");
+            System.out.println("8. Añadir libro al catálogo");
+            System.out.println("9. Cancelar Reserva");
             System.out.println("0. Salir");
             System.out.println("==============================");
             System.out.print("Seleccione una opción: ");
@@ -65,6 +67,18 @@ public class Consola {
                         if (usuario != null) {
                         } else {
                             System.out.println("El libro no está prestado.");
+                        }
+                        break;
+                    case 8:
+                        ejecutarFlujoAltaLibro(gestor);
+                        break;
+                    case 9:
+                        System.out.print("ISBN de la reserva a cancelar: ");
+                        try {
+                            gestor.cancelarReserva(sc.nextLine());
+                            System.out.println("Reserva cancelada correctamente. El libro vuelve a estar disponible.");
+                        } catch (Exception e) {
+                            System.out.println("Error al cancelar reserva: " + e.getMessage());
                         }
                         break;
                     case 0:
@@ -179,6 +193,48 @@ public class Consola {
             System.out.println("No se encontraron resultados.");
         } else {
             libros.forEach(System.out::println);
+        }
+    }
+
+    private void ejecutarFlujoAltaLibro(GestorBiblioteca gestor) {
+        try {
+            System.out.println("\n--- AÑADIR NUEVO LIBRO ---");
+            System.out.print("ISBN: ");
+            String isbn = sc.nextLine();
+            System.out.print("Título: ");
+            String titulo = sc.nextLine();
+            System.out.print("Autor: ");
+            String autor = sc.nextLine();
+            System.out.print("Editorial: ");
+            String editorial = sc.nextLine();
+
+            System.out.println(
+                    "Géneros válidos: FICCION, NO_FICCION, CIENCIA_FICCION, FANTASIA, MISTERIO, TERROR, ROMANCE, HISTORICO, BIOGRAFIA, AUTOAYUDA, OTRO");
+            System.out.print("Género: ");
+            GeneroLibro genero = GeneroLibro.valueOf(sc.nextLine().toUpperCase());
+
+            System.out.print("Año de publicación: ");
+            int anio = Integer.parseInt(sc.nextLine());
+
+            System.out.print("Número de copias totales: ");
+            int copias = Integer.parseInt(sc.nextLine());
+
+            Libro nuevoLibro = new Libro(isbn, titulo, autor, editorial, genero, anio, copias);
+
+            // Usamos setters (programados en Libro.java) para forzar las
+            // validaciones
+            nuevoLibro.setIsbn(isbn);
+            nuevoLibro.setTitulo(titulo);
+
+            gestor.altaLibro(nuevoLibro);
+            System.out.println("¡ÉXITO! Libro '" + titulo + "' añadido al catálogo.");
+
+        } catch (IllegalArgumentException e) {
+            System.out
+                    .println("ERROR en los datos ingresados: Revisa que el género exista o los datos no estén vacíos. "
+                            + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("ERROR inesperado al crear el libro: " + e.getMessage());
         }
     }
 
