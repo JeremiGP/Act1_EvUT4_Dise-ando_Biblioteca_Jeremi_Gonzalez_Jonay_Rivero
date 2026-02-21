@@ -295,6 +295,41 @@ public class Consola {
             System.out.println("Error inesperado: " + e.getMessage());
         }
 
+        // PRUEBA 10: Cancelar una reserva de un libro que no está reservado
+        // (IllegalStateException)
+        try {
+            System.out.println("\n[Test 10] Intentando cancelar reserva de un libro que no está reservado...");
+            // El libro "112" está DISPONIBLE por defecto
+            gestor.cancelarReserva("112");
+        } catch (IllegalStateException e) {
+            System.out.println("CAPTURADA (Estado Inválido): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
+
+        // PRUEBA 11: Cancelar reserva de un ISBN falso (IllegalArgumentException)
+        try {
+            System.out.println("\n[Test 11] Intentando cancelar reserva de un ISBN inventado...");
+            gestor.cancelarReserva("ISBN_FANTASMA");
+        } catch (IllegalArgumentException e) {
+            System.out.println("CAPTURADA (Datos Inválidos): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
+
+        // PRUEBA 12: Añadir un libro con título o ISBN vacío
+        try {
+            System.out.println("\n[Test 12] Intentando añadir un libro con el título vacío...");
+            // Clase Libro.java lanza un error en el "setTitulo" si está vacío
+            Libro libroMalo = new Libro("777", "", "Autor X", "Ed Y", GeneroLibro.FICCION, 2024, 5);
+            libroMalo.setTitulo(""); // Forzamos la validación
+            gestor.altaLibro(libroMalo);
+        } catch (IllegalArgumentException e) {
+            System.out.println("CAPTURADA (Validación Modelo Libro): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
+
         System.out.println("\n--- FIN DEL TEST DE EXCEPCIONES ---");
     }
 }
