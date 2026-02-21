@@ -165,8 +165,8 @@ public class GestorBiblioteca {
                     "ERROR: El usuario ya tiene 3 libros prestados, no puede pedir más.");
         }
 
-        // Si el libro no está disponible, no se puede realizar el prestamo.
-        if (libro.getEstado() != EstadoLibro.DISPONIBLE) {
+        // Si el libro está disponible o reservado, se puede realizar el prestamo.
+        if (libro.getEstado() != EstadoLibro.DISPONIBLE && libro.getEstado() != EstadoLibro.RESERVADO) {
             throw new LibroNoDisponibleException("ERROR: El libro " + libro.getTitulo() + " no está disponible.");
         }
 
@@ -208,6 +208,9 @@ public class GestorBiblioteca {
         // Cambiamos el estado global a PRESTADO si ya no quedan más copias en absoluto
         if (libro.getCopiasDisponibles() == 0) {
             libro.setEstado(EstadoLibro.PRESTADO);
+        } else {
+            // Si quedan copias despues de prestar, el estado es DISPONIBLE
+            libro.setEstado(EstadoLibro.DISPONIBLE);
         }
 
         return nuevoPrestamo;
@@ -290,11 +293,8 @@ public class GestorBiblioteca {
         // Reducimos la copia.
         libro.reducirCopia();
 
-        // Solo cambiamos el estado global a RESERVADO si se agotan las copias al hacer
-        // esta reserva
-        if (libro.getCopiasDisponibles() == 0) {
-            libro.setEstado(EstadoLibro.RESERVADO);
-        }
+        // Forzamos el estado a RESERVADO para que deje de figurar como DISPONIBLE.
+        libro.setEstado(EstadoLibro.RESERVADO);
     }
 
     // --- RESÚMENES ---

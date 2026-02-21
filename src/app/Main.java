@@ -41,9 +41,6 @@ public class Main {
         gestor.altaUsuario(u2);
         gestor.altaUsuario(uSancionado);
 
-        // Simulamos test de excepciones básicos de validación
-        vista.simularPruebasDeExcepciones(gestor);
-
         // Lanzamos el menú interactivo para continuar probando la aplicación
         vista.mostrarMenu(gestor);
     }
