@@ -27,6 +27,7 @@ public class Consola {
             System.out.println("4. Prestar Libro");
             System.out.println("5. Devolver Libro");
             System.out.println("6. Reservar Libro");
+            System.out.println("7. Quien tiene el libro");
             System.out.println("0. Salir");
             System.out.println("==============================");
             System.out.print("Seleccione una opción: ");
@@ -55,6 +56,16 @@ public class Consola {
                         System.out.print("ISBN a reservar: ");
                         gestor.reservarLibro(sc.nextLine());
                         System.out.println("Solicitud de reserva procesada.");
+                        break;
+                    case 7:
+                        System.out.println("Introduzca ISBN del libro: ");
+                        String isbn = sc.nextLine();
+                        Usuario usuario = gestor.quienTieneElLibro(isbn);
+                        if (usuario != null) {
+                            System.out.println("El libro está prestado a: " + usuario.getNombre());
+                        } else {
+                            System.out.println("El libro no está prestado.");
+                        }
                         break;
                     case 0:
                         System.out.println("Saliendo del sistema...");
@@ -153,7 +164,7 @@ public class Consola {
                     imprimirResultados(gestor.buscarLibroPorGenero(gl));
                     break;
                 default:
-                    System.out.println("ERROR: Opción de búsqueda no válida.");
+                    System.out.println("Opción de búsqueda no válida.");
                     break;
             }
         } catch (IllegalArgumentException e) {
