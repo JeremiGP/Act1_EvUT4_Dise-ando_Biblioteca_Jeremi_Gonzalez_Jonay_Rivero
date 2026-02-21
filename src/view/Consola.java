@@ -201,14 +201,12 @@ public class Consola {
             System.out.println("\n[Test 2] Intentando devolver con ID vacío...");
             gestor.devolverLibro("", "111");
         } catch (IllegalArgumentException e) {
-            // La UT4 recomienda usar IllegalArgumentException para argumentos no válidos
             System.out.println("CAZADA (Error de argumento): " + e.getMessage());
         }
 
         // PRUEBA 3: Simulación de sanción (Lógica de negocio)
         try {
             System.out.println("\n[Test 3] Verificando sanciones para usuario 001...");
-            // Aquí rescatamos la lógica de tu método original
             gestor.verificarVencimientosYSancionar("001");
             System.out.println("Verificación completada sin errores críticos.");
         } catch (Exception e) {
@@ -218,7 +216,6 @@ public class Consola {
         // PRUEBA 4: Préstamo a usuario sancionado (SancionActivaException)
         try {
             System.out.println("\n[Test 4] Intentando prestar al usuario sancionado '003'...");
-            // En tu Main preparaste a Pedro ("003") con una sanción activa.
             gestor.realizarPrestamo("003", "111");
         } catch (SancionActivaException e) {
             System.out.println("CAPTURADA (Sanción Activa): " + e.getMessage());
@@ -233,7 +230,7 @@ public class Consola {
             gestor.realizarPrestamo("002", "112");
             gestor.realizarPrestamo("002", "113");
             System.out.println("Maria ya tiene 3 libros. Intentando sacar el cuarto...");
-            gestor.realizarPrestamo("002", "114"); // Aquí debe explotar
+            gestor.realizarPrestamo("002", "114");
         } catch (LimitePrestamosExcedidoException e) {
             System.out.println("CAPTURADA (Límite Excedido): " + e.getMessage());
         } catch (Exception e) {
@@ -251,6 +248,49 @@ public class Consola {
             gestor.realizarPrestamo("001", "114"); // Debe saltar regla del historial
         } catch (SancionActivaException e) {
             System.out.println("CAPTURADA (Bloqueo Historial): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
+
+        // PRUEBA 7: Préstamo de un libro sin copias disponibles
+        // (LibroNoDisponibleException)
+        try {
+            System.out.println("\n[Test 7] Intentando pedir un libro que ya no tiene copias...");
+            // Creamos un libro con una sola copia para forzar la falta de stock rápidamente
+            Libro libroUnico = new Libro("998", "Libro Único", "Autor X", "Ed", GeneroLibro.OTRO, 2024, 1);
+            gestor.altaLibro(libroUnico);
+
+            gestor.realizarPrestamo("001", "998"); // Juan ("001") se lleva la única copia
+            System.out.println("Juan se llevó la única copia. Maria ('002') intenta pedirlo...");
+
+            gestor.realizarPrestamo("002", "998"); // Debe fallar porque quedan 0 copias
+        } catch (LibroNoDisponibleException e) {
+            System.out.println("CAPTURADA (Libro Agotado): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
+
+        // PRUEBA 8: Devolver un libro que el usuario no tiene prestado
+        // (IllegalArgumentException)
+        try {
+            System.out.println("\n[Test 8] Intentando devolver un libro que el usuario no ha pedido...");
+            // Maria ("002") intenta devolver el libro "113", el cual nunca ha sacado
+            gestor.devolverLibro("002", "113");
+        } catch (IllegalArgumentException e) {
+            System.out.println("CAPTURADA (Devolución Inválida): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
+
+        // PRUEBA 9: Reservar un libro que no tiene copias disponibles
+        // (LibroNoDisponibleException)
+        try {
+            System.out.println("\n[Test 9] Intentando reservar un libro sin copias disponibles...");
+            // Usamos el libro "998" que creamos en el Test 7, el cual Juan tiene en su
+            // poder (0 copias disponibles)
+            gestor.reservarLibro("998");
+        } catch (LibroNoDisponibleException e) {
+            System.out.println("CAPTURADA (Reserva Fallida): " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Error inesperado: " + e.getMessage());
         }
