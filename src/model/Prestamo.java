@@ -22,7 +22,7 @@ public class Prestamo {
 
     public void setLibro(Libro libro) {
         if (libro == null) {
-            throw new IllegalArgumentException("El libro no puede estar vacío.");
+            throw new IllegalArgumentException("ERROR: El libro no puede estar vacío.");
         }
         this.libro = libro;
     }
@@ -33,7 +33,7 @@ public class Prestamo {
 
     public void setUsuario(Usuario usuario) {
         if (usuario == null) {
-            throw new IllegalArgumentException("El usuario no puede estar vacío.");
+            throw new IllegalArgumentException("ERROR: El usuario no puede estar vacío.");
         }
         this.usuario = usuario;
     }
@@ -44,7 +44,7 @@ public class Prestamo {
 
     public void setFechaPrestamo(LocalDate fechaPrestamo) {
         if (fechaPrestamo == null) {
-            throw new IllegalArgumentException("La fecha de prestamo no puede estar vacía.");
+            throw new IllegalArgumentException("ERROR: La fecha de prestamo no puede estar vacía.");
         }
         this.fechaPrestamo = fechaPrestamo;
     }
@@ -55,7 +55,7 @@ public class Prestamo {
 
     public void setFechaVencimiento(LocalDate fechaVencimiento) {
         if (fechaVencimiento == null) {
-            throw new IllegalArgumentException("La fecha de vencimiento no puede estar vacía.");
+            throw new IllegalArgumentException("ERROR: La fecha de vencimiento no puede estar vacía.");
         }
         this.fechaVencimiento = fechaVencimiento;
     }
@@ -66,7 +66,7 @@ public class Prestamo {
 
     public void setFechaDevolucionReal(LocalDate fechaDevolucionReal) {
         if (fechaDevolucionReal == null) {
-            throw new IllegalArgumentException("La fecha de devolucion real no puede estar vacía.");
+            throw new IllegalArgumentException("ERROR: La fecha de devolucion real no puede estar vacía.");
         }
         this.fechaDevolucionReal = fechaDevolucionReal;
     }

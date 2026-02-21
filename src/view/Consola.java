@@ -153,13 +153,13 @@ public class Consola {
                     imprimirResultados(gestor.buscarLibroPorGenero(gl));
                     break;
                 default:
-                    System.out.println("Opción de búsqueda no válida.");
+                    System.out.println("ERROR: Opción de búsqueda no válida.");
                     break;
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Error: El género introducido no existe.");
+            System.out.println("ERROR: El género introducido no existe.");
         } catch (Exception e) {
-            System.out.println("Error en la búsqueda: " + e.getMessage());
+            System.out.println("ERROR en la búsqueda: " + e.getMessage());
         }
     }
 

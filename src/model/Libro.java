@@ -29,14 +29,14 @@ public class Libro {
 
     public void setIsbn(String isbn) {
         if (isbn == null || isbn.trim().isEmpty()) {
-            throw new IllegalArgumentException("El ISBN no puede estar vacío.");
+            throw new IllegalArgumentException("ERROR: El ISBN no puede estar vacío.");
         }
         this.isbn = isbn;
     }
 
     public void setTitulo(String titulo) {
         if (titulo == null || titulo.trim().isEmpty()) {
-            throw new IllegalArgumentException("El título no puede estar vacío.");
+            throw new IllegalArgumentException("ERROR: El título no puede estar vacío.");
         }
         this.titulo = titulo;
     }
