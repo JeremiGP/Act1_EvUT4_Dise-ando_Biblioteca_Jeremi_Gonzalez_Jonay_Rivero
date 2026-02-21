@@ -47,7 +47,4 @@ public class Main {
         // Lanzamos el menú interactivo para continuar probando la aplicación
         vista.mostrarMenu(gestor);
     }
-
-    // Pruebas para comprobar que las excepciones funcionan.
-
 }
