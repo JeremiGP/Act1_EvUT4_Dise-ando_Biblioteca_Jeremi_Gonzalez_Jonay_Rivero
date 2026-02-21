@@ -5,9 +5,9 @@ import java.time.LocalDate;
 
 // Importaciones de los paquetes del proyecto.
 import controller.GestorBiblioteca;
+import view.Consola;
 import model.*;
 import model.enums.*;
-import view.Consola;
 
 public class Main {
 
@@ -16,12 +16,6 @@ public class Main {
         GestorBiblioteca gestor = new GestorBiblioteca();
         Consola vista = new Consola();
 
-        cargarDatosIniciales(gestor);
-
-        vista.mostrarMenu(gestor);
-    }
-
-    private static void cargarDatosIniciales(GestorBiblioteca gestor) {
         // Creamos libros
         Libro l1 = new Libro("111", "Don Quijote", "Cervantes", "Planeta", GeneroLibro.CIENCIA_FICCION, 1605, 5);
         Libro l2 = new Libro("112", "Cien Años de Soledad", "García Márquez", "Sudamericana", GeneroLibro.FICCION, 1967,
@@ -46,6 +40,12 @@ public class Main {
         gestor.altaUsuario(u1);
         gestor.altaUsuario(u2);
         gestor.altaUsuario(uSancionado);
+
+        // Simulamos test de excepciones básicos de validación
+        vista.simularPruebasDeExcepciones(gestor);
+
+        // Lanzamos el menú interactivo para continuar probando la aplicación
+        vista.mostrarMenu(gestor);
     }
 
     // Pruebas para comprobar que las excepciones funcionan.
