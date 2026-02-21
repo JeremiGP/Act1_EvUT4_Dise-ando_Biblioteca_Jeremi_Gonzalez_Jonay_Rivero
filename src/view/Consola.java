@@ -62,7 +62,6 @@ public class Consola {
                         String isbn = sc.nextLine();
                         Usuario usuario = gestor.quienTieneElLibro(isbn);
                         if (usuario != null) {
-                            System.out.println("El libro está prestado a: " + usuario.getNombre());
                         } else {
                             System.out.println("El libro no está prestado.");
                         }
