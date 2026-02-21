@@ -1,6 +1,7 @@
 package view;
 
 import controller.GestorBiblioteca;
+import exceptions.*;
 import model.Libro;
 import model.Prestamo;
 import model.enums.GeneroLibro;
@@ -212,6 +213,46 @@ public class Consola {
             System.out.println("Verificación completada sin errores críticos.");
         } catch (Exception e) {
             System.err.println("ERROR CRÍTICO en el sistema: " + e.getMessage());
+        }
+
+        // PRUEBA 4: Préstamo a usuario sancionado (SancionActivaException)
+        try {
+            System.out.println("\n[Test 4] Intentando prestar al usuario sancionado '003'...");
+            // En tu Main preparaste a Pedro ("003") con una sanción activa.
+            gestor.realizarPrestamo("003", "111");
+        } catch (SancionActivaException e) {
+            System.out.println("CAPTURADA (Sanción Activa): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
+
+        // PRUEBA 5: Límite de 3 libros superado (LimitePrestamosExcedidoException)
+        try {
+            System.out.println("\n[Test 5] Intentando superar el límite de 3 préstamos para Maria ('002')...");
+            gestor.realizarPrestamo("002", "111");
+            gestor.realizarPrestamo("002", "112");
+            gestor.realizarPrestamo("002", "113");
+            System.out.println("Maria ya tiene 3 libros. Intentando sacar el cuarto...");
+            gestor.realizarPrestamo("002", "114"); // Aquí debe explotar
+        } catch (LimitePrestamosExcedidoException e) {
+            System.out.println("CAPTURADA (Límite Excedido): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
+        }
+
+        // PRUEBA 6: Bloqueo de 7 días al volver a pedir el mismo libro
+        // (SancionActivaException)
+        try {
+            System.out.println("\n[Test 6] Intentando pedir un libro recién devuelto (Bloqueo 7 días)...");
+            // Usamos a Juan ("001") que está limpio.
+            gestor.realizarPrestamo("001", "114"); // Lo pide
+            gestor.devolverLibro("001", "114"); // Lo devuelve al instante
+            System.out.println("Libro devuelto. Intentando pedir el MISMO libro hoy mismo...");
+            gestor.realizarPrestamo("001", "114"); // Debe saltar regla del historial
+        } catch (SancionActivaException e) {
+            System.out.println("CAPTURADA (Bloqueo Historial): " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error inesperado: " + e.getMessage());
         }
 
         System.out.println("\n--- FIN DEL TEST DE EXCEPCIONES ---");
