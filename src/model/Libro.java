@@ -1,9 +1,12 @@
 package model;
 
+// Importaciones de enums
 import model.enums.EstadoLibro;
 import model.enums.GeneroLibro;
 
+// Clase que representa un libro
 public class Libro {
+    // Atributos privados de la clase
     private String isbn;
     private String titulo;
     private String autor;
@@ -14,6 +17,7 @@ public class Libro {
     private int copiasTotales;
     private int copiasDisponibles;
 
+    // Constructor de la clase
     public Libro(String isbn, String titulo, String autor, String editorial,
             GeneroLibro genero, int anioPublicacion, int copiasTotales) {
         this.isbn = isbn;
@@ -27,6 +31,7 @@ public class Libro {
         this.estado = EstadoLibro.DISPONIBLE;
     }
 
+    // --- SETTERS ---
     public void setIsbn(String isbn) {
         if (isbn == null || isbn.trim().isEmpty()) {
             throw new IllegalArgumentException("ERROR: El ISBN no puede estar vacío.");
@@ -41,6 +46,7 @@ public class Libro {
         this.titulo = titulo;
     }
 
+    // --- GETTERS ---
     public String getIsbn() {
         return isbn;
     }
@@ -65,6 +71,7 @@ public class Libro {
         this.estado = estado;
     }
 
+    // --- METODOS ---
     public void reducirCopia() {
         this.copiasDisponibles--;
     }
@@ -73,6 +80,7 @@ public class Libro {
         this.copiasDisponibles++;
     }
 
+    // --- METODO toString ---
     @Override
     public String toString() {
         return String.format("ISBN: %s | %s | %s | Copias: %d/%d | Estado: %s | Autor: %s | Editorial: %s | Año: %d",

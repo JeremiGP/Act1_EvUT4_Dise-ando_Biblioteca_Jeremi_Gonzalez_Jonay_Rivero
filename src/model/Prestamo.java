@@ -1,14 +1,18 @@
 package model;
 
+// Importacion de LocalDate
 import java.time.LocalDate;
 
+// Clase que representa un prestamo
 public class Prestamo {
+    // Atributos privados de la clase
     private Libro libro;
     private Usuario usuario;
     private LocalDate fechaPrestamo;
     private LocalDate fechaVencimiento;
     private LocalDate fechaDevolucionReal;
 
+    // Constructor de la clase
     public Prestamo(Libro libro, Usuario usuario, LocalDate fechaPrestamo, LocalDate fechaVencimiento) {
         this.libro = libro;
         this.usuario = usuario;
@@ -16,19 +20,33 @@ public class Prestamo {
         this.fechaVencimiento = fechaPrestamo.plusDays(30); // 30 dias de prestamo
     }
 
+    // --- GETTERS ---
     public Libro getLibro() {
         return libro;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public LocalDate getFechaPrestamo() {
+        return fechaPrestamo;
+    }
+
+    public LocalDate getFechaVencimiento() {
+        return fechaVencimiento;
+    }
+
+    public LocalDate getFechaDevolucionReal() {
+        return fechaDevolucionReal;
+    }
+
+    // --- SETTERS ---
     public void setLibro(Libro libro) {
         if (libro == null) {
             throw new IllegalArgumentException("ERROR: El libro no puede estar vacío.");
         }
         this.libro = libro;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
     }
 
     public void setUsuario(Usuario usuario) {
@@ -38,19 +56,11 @@ public class Prestamo {
         this.usuario = usuario;
     }
 
-    public LocalDate getFechaPrestamo() {
-        return fechaPrestamo;
-    }
-
     public void setFechaPrestamo(LocalDate fechaPrestamo) {
         if (fechaPrestamo == null) {
             throw new IllegalArgumentException("ERROR: La fecha de prestamo no puede estar vacía.");
         }
         this.fechaPrestamo = fechaPrestamo;
-    }
-
-    public LocalDate getFechaVencimiento() {
-        return fechaVencimiento;
     }
 
     public void setFechaVencimiento(LocalDate fechaVencimiento) {
@@ -60,10 +70,6 @@ public class Prestamo {
         this.fechaVencimiento = fechaVencimiento;
     }
 
-    public LocalDate getFechaDevolucionReal() {
-        return fechaDevolucionReal;
-    }
-
     public void setFechaDevolucionReal(LocalDate fechaDevolucionReal) {
         if (fechaDevolucionReal == null) {
             throw new IllegalArgumentException("ERROR: La fecha de devolucion real no puede estar vacía.");
@@ -71,10 +77,12 @@ public class Prestamo {
         this.fechaDevolucionReal = fechaDevolucionReal;
     }
 
+    // --- METODOS ---
     public void registrarDevolucion() {
         this.fechaDevolucionReal = LocalDate.now();
     }
 
+    // --- METODO toString ---
     @Override
     public String toString() {
         return "Prestamo [libro=" + libro + ", usuario=" + usuario + ", fechaPrestamo=" + fechaPrestamo

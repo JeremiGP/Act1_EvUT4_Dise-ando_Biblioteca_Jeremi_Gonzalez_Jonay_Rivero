@@ -1,16 +1,20 @@
 package model;
 
+// Importaciones LocalDate y ArrayList
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+// Clase Usuario
 public class Usuario {
+    // Atributos privados de la clase
     private String id;
     private String nombre;
     private List<Libro> librosPrestados;
     private List<Prestamo> historialPrestamos;
     private LocalDate fechaFinSancion;
 
+    // Constructor de la clase
     public Usuario(String id, String nombre) {
         this.id = id;
         this.nombre = nombre;
@@ -18,7 +22,7 @@ public class Usuario {
         this.historialPrestamos = new ArrayList<>();
     }
 
-    // Getters y Setters
+    // --- GETTERS ---
     public String getId() {
         return id;
     }
@@ -39,10 +43,12 @@ public class Usuario {
         return fechaFinSancion;
     }
 
+    // --- SETTERS ---
     public void setFechaFinSancion(LocalDate fecha) {
         this.fechaFinSancion = fecha;
     }
 
+    // --- METODO toString ---
     @Override
     public String toString() {
         return nombre + " (ID: " + id + ")";

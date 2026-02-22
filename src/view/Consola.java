@@ -1,21 +1,25 @@
 package view;
 
+// Importaciones de los demas ficheros del proyecto
 import controller.GestorBiblioteca;
 import exceptions.*;
 import model.Libro;
 import model.Prestamo;
 import model.enums.GeneroLibro;
 import model.Usuario;
+
+// Importaciones de las librerias java (Scanner y List)
 import java.util.Scanner;
 import java.util.List;
 
 /**
  * Clase Consola: Encargada de la interacción con el usuario.
- * Aplica estructuras de control de la UT2 y gestión de colecciones de la UT3.
  */
 public class Consola {
+    // Creacion del Scanner
     private final Scanner sc = new Scanner(System.in);
 
+    // Metodo mostrarMenu
     public void mostrarMenu(GestorBiblioteca gestor) {
         int opcion = -1;
 
@@ -99,6 +103,7 @@ public class Consola {
 
     // --- MÉTODOS AUXILIARES PARA LIMPIAR EL SWITCH (MODULARIZACIÓN) ---
 
+    // Metodo ejecutarFlujoPrestamo
     private void ejecutarFlujoPrestamo(GestorBiblioteca gestor) {
         System.out.print("Indique ID Usuario: ");
         String idU = sc.nextLine();
@@ -115,6 +120,7 @@ public class Consola {
         }
     }
 
+    // Metodo ejecutarFlujoDevolucion
     private void ejecutarFlujoDevolucion(GestorBiblioteca gestor) {
         System.out.print("Indique ID Usuario: ");
         String idD = sc.nextLine();
@@ -132,6 +138,7 @@ public class Consola {
         }
     }
 
+    // Metodo imprimirResumen
     private void imprimirResumen(GestorBiblioteca gestor) {
         System.out.println("\n=== LISTADO DE USUARIOS Y SANCIONES ===");
         for (Usuario usuario : gestor.getUsuarios()) {
@@ -154,6 +161,7 @@ public class Consola {
         }
     }
 
+    // Metodo menuBusqueda
     private void menuBusqueda(GestorBiblioteca gestor) {
         System.out.println("\nBuscar por: 1. Título | 2. ISBN | 3. Género");
         try {
@@ -196,6 +204,7 @@ public class Consola {
         }
     }
 
+    // Metodo ejecutarFlujoAltaLibro
     private void ejecutarFlujoAltaLibro(GestorBiblioteca gestor) {
         try {
             System.out.println("\n--- AÑADIR NUEVO LIBRO ---");
@@ -241,6 +250,8 @@ public class Consola {
     /**
      * Método para simular fallos y verificar que las excepciones
      */
+
+    // Metodo simularPruebasDeExcepciones
     public void simularPruebasDeExcepciones(GestorBiblioteca gestor) {
         System.out.println("\n--- INICIANDO TEST DE EXCEPCIONES ---");
 
